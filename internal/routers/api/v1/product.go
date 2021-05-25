@@ -3,9 +3,32 @@ package v1
 import (
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
+	"github.com/unknwon/com"
+	"net/http"
+	"second-hand-bbs-go/utils/app"
+	"second-hand-bbs-go/utils/e"
 )
 
 func GetProducts(c *gin.Context) {
+}
+
+// @Summary 获取单个商品
+// @Produce  json
+// @Param id query string true "id"
+// @Success 200 {string} json "{"code":200,"data":{},"msg":"ok"}"
+// @Router /api/v1/product [post]
+func GetProduct(c *gin.Context) {
+	appG := app.Gin{c}
+	id := com.StrTo(c.Param("id")).MustInt()
+	valid := validation.Validation{}
+	valid.Min(id, 1, "id").Message("ID必须大于0")
+
+	if valid.HasErrors() {
+		app.MarkErrors(valid.Errors)
+		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+		return
+	}
+
 }
 
 // @Summary 新增商品
