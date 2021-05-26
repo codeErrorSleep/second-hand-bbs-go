@@ -1,15 +1,18 @@
 package v1
 
 import (
+	"fmt"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
 	"net/http"
+	"second-hand-bbs-go/internal/service/product_service"
 	"second-hand-bbs-go/utils/app"
 	"second-hand-bbs-go/utils/e"
 )
 
 func GetProducts(c *gin.Context) {
+
 }
 
 // @Summary 获取单个商品
@@ -20,6 +23,7 @@ func GetProducts(c *gin.Context) {
 func GetProduct(c *gin.Context) {
 	appG := app.Gin{c}
 	id := com.StrTo(c.Param("id")).MustInt()
+	fmt.Println(id)
 	valid := validation.Validation{}
 	valid.Min(id, 1, "id").Message("ID必须大于0")
 
@@ -29,6 +33,24 @@ func GetProduct(c *gin.Context) {
 		return
 	}
 
+	productService := product_service.Product{ID: id}
+	exists, err := productService.ExistById()
+
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.INVALID_PARAMS, nil)
+		return
+	}
+	if !exists {
+		appG.Response(http.StatusOK, e.ERROR_NOT_EXIST_PRODUCT, nil)
+		return
+	}
+
+	product, err := productService.Get()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_GET_ARTICLE_FAIL, nil)
+		return
+	}
+	appG.Response(http.StatusOK, e.SUCCESS, product)
 }
 
 // @Summary 新增商品

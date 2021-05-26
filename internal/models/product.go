@@ -1,5 +1,7 @@
 package models
 
+import "github.com/jinzhu/gorm"
+
 type Product struct {
 	Model
 
@@ -10,6 +12,17 @@ type Product struct {
 	CreatedBy   string `json:"created_by"`
 	ModifiedBy  string `json:"modified_by"`
 	State       int    `json:"state"`
+}
+
+// 获取单个商品
+func GetProduct(id int) (*Product, error) {
+	var product Product
+	err := db.Where("id=?", id).First(&product).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+
+	return &product, nil
 }
 
 // 获取产品列表
@@ -32,6 +45,19 @@ func ExistProductByName(name string) bool {
 		return true
 	}
 	return false
+}
+
+// 判断商品是否存在
+func ExistProductByID(id int) (bool, error) {
+	var product Product
+	err := db.Select("id").Where("id = ?", id).First(&product).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return false, err
+	}
+	if product.ID > 0 {
+		return true, nil
+	}
+	return false, nil
 }
 
 func AddProduct(productName string, productType string, price int) bool {

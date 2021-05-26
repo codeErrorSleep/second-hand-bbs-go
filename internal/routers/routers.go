@@ -21,8 +21,10 @@ func InitRouter() *gin.Engine {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	apiv1 := r.Group("/api/v1")
 	{
-		//获取商品列表
-		apiv1.GET("/product", v1.GetProducts)
+		//获取多个商品列表
+		apiv1.GET("/products", v1.GetProducts)
+		//获取指定商品
+		apiv1.GET("/product/:id", v1.GetProduct)
 		//新建商品
 		apiv1.POST("/product", v1.AddProduct)
 		//更新指定商品
