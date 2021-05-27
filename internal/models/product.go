@@ -25,10 +25,22 @@ func GetProduct(id int) (*Product, error) {
 	return &product, nil
 }
 
+func GetProductTotal() (int, error) {
+	var count int
+	if err := db.Model(&Product{}).Count(&count).Error; err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
 // 获取产品列表
-func GetProducts(pageNum int, pageSize int, maps interface{}) (products []Product) {
-	db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&products)
-	return
+func GetProducts(pageNum int, pageSize int, maps interface{}) ([]*Product, error) {
+	var products []*Product
+	err := db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&products).Error
+	if err != nil {
+		return nil, err
+	}
+	return products, nil
 }
 
 // 获取商品总数
@@ -60,11 +72,19 @@ func ExistProductByID(id int) (bool, error) {
 	return false, nil
 }
 
-func AddProduct(productName string, productType string, price int) bool {
-	db.Create(&Product{
-		ProductName: productName,
-		ProductType: productType,
-		Price:       price,
-	})
-	return true
+func AddProduct(data map[string]interface{}) error {
+	product := map[string]interface{}{
+		"ProductName": data["product_name"].(string),
+		"Price":       data["price"].(int),
+		"ProductType": data["type"].(string),
+		"Content":     data["content"].(string),
+		"State":       data["state"].(int),
+		"CreatedBy":   data["created_by"].(string),
+		"ModifiedBy":  data["modified_by"].(string),
+	}
+	if err := db.Create(&product).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

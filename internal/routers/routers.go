@@ -22,11 +22,13 @@ func InitRouter() *gin.Engine {
 	apiv1 := r.Group("/api/v1")
 	{
 		//获取多个商品列表
-		apiv1.GET("/products", v1.GetProducts)
+		apiv1.POST("/products", v1.GetProducts)
+		//获取商品列表总数
+		apiv1.GET("/products/count", v1.GetProductTotal)
 		//获取指定商品
-		apiv1.GET("/product/:id", v1.GetProduct)
+		apiv1.POST("/product/:id", v1.GetProduct)
 		//新建商品
-		apiv1.POST("/product", v1.AddProduct)
+		apiv1.POST("/product/add", v1.AddProduct)
 		//更新指定商品
 		apiv1.POST("/product/update/:id", v1.EditProduct)
 		//删除指定商品

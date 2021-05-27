@@ -7,12 +7,53 @@ import (
 	"github.com/unknwon/com"
 	"net/http"
 	"second-hand-bbs-go/internal/service/product_service"
+	"second-hand-bbs-go/utils"
 	"second-hand-bbs-go/utils/app"
 	"second-hand-bbs-go/utils/e"
 )
 
 func GetProducts(c *gin.Context) {
+	appG := app.Gin{c}
+	// 验证参数
+	valid := validation.Validation{}
+	if valid.HasErrors() {
+		app.MarkErrors(valid.Errors)
+		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+		return
+	}
 
+	productService := product_service.Product{
+		State:    1,
+		PageNum:  utils.GetPage(c),
+		PageSize: utils.AppSetting.PageSize,
+	}
+	// 获取商品列表
+	products, err := productService.GetAll()
+	if err != nil {
+		appG.Response(http.StatusOK, e.ERROR_GET_PRODUCTS_FAIL, nil)
+		return
+	}
+	appG.Response(http.StatusOK, e.SUCCESS, products)
+
+}
+
+func GetProductTotal(c *gin.Context) {
+	appG := app.Gin{c}
+	valid := validation.Validation{}
+	if valid.HasErrors() {
+		app.MarkErrors(valid.Errors)
+		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+		return
+	}
+
+	productService := product_service.Product{}
+	// 获取商品总数
+	total, err := productService.Count()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.INVALID_PARAMS, nil)
+		return
+	}
+	appG.Response(http.StatusOK, e.SUCCESS, total)
 }
 
 // @Summary 获取单个商品
@@ -47,10 +88,19 @@ func GetProduct(c *gin.Context) {
 
 	product, err := productService.Get()
 	if err != nil {
-		appG.Response(http.StatusInternalServerError, e.ERROR_GET_ARTICLE_FAIL, nil)
+		appG.Response(http.StatusInternalServerError, e.ERROR_GET_PRODUCT_FAIL, nil)
 		return
 	}
 	appG.Response(http.StatusOK, e.SUCCESS, product)
+}
+
+type AddProductForm struct {
+	ProductName string `form:"product_name" valid:"Required;MaxSize(100)"`
+	Price       int    `form:"price" valid:"Required;MaxSize(255)"`
+	ProductType string `form:"type" valid:"Required;MaxSize(2)"`
+	Content     string `form:"content" valid:"Required;MaxSize(1024)"`
+	CreatedBy   string `form:"created_by" valid:"Required;MaxSize(100)"`
+	State       int    `form:"state" valid:"Range(0,1)"`
 }
 
 // @Summary 新增商品
@@ -61,22 +111,31 @@ func GetProduct(c *gin.Context) {
 // @Success 200 {string} json "{"code":200,"data":{},"msg":"ok"}"
 // @Router /api/v1/product [post]
 func AddProduct(c *gin.Context) {
-	// 获取相应的数据
-	productName := c.Query("product_name")
-	productType := c.Query("product_type")
-	price := c.Query("price")
-	state := c.Query("state")
-	createdBy := c.Query("created_by")
-	// 判断数据正确性
-	valid := validation.Validation{}
-	valid.Required(productName, "product_name").Message("名称不能为空")
-	valid.MaxSize(productName, 100, "product_name").Message("名称最长为50字符")
-	valid.Required(productType, "product_type").Message("商品类型不能为空")
-	valid.Required(price, "price").Message("价格不能为空")
-	valid.Required(createdBy, "created_by").Message("创建人不能为空")
-	valid.MaxSize(createdBy, 100, "created_by").Message("创建人最长为50字符")
-	valid.Range(state, 0, 1, "state").Message("状态只允许0或1")
+	var (
+		appG = app.Gin{C: c}
+		form AddProductForm
+	)
 
+	httpCode, errCode := app.BindAndValid(c, &form)
+	if errCode != e.SUCCESS {
+		appG.Response(httpCode, errCode, nil)
+		return
+	}
+
+	productService := product_service.Product{
+		ProductName: form.ProductName,
+		Price:       form.Price,
+		ProductType: form.ProductType,
+		Content:     form.Content,
+		CreatedBy:   form.CreatedBy,
+		State:       form.State,
+	}
+
+	if err := productService.Add(); err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_PRODUCT_FAIL, nil)
+		return
+	}
+	appG.Response(http.StatusOK, e.SUCCESS, nil)
 }
 
 //修改商品信息
