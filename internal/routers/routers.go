@@ -35,5 +35,15 @@ func InitRouter() *gin.Engine {
 		apiv1.POST("/product/delete/:id", v1.DeleteProduct)
 	}
 
+	// 用户管理
+	auth := r.Group("/api/v1")
+	{
+		// 注册
+		auth.POST("/register", v1.)
+		// 登录
+		auth.POST("/login")
+	}
+
+
 	return r
 }
