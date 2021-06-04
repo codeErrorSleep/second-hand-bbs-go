@@ -39,11 +39,10 @@ func InitRouter() *gin.Engine {
 	auth := r.Group("/api/v1")
 	{
 		// 注册
-		auth.POST("/register", v1.)
+		auth.POST("/register")
 		// 登录
 		auth.POST("/login")
 	}
-
 
 	return r
 }
