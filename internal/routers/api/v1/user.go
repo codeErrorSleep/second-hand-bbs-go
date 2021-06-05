@@ -1,18 +1,34 @@
 package v1
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
+	"net/http"
+	"second-hand-bbs-go/internal/models"
+	"second-hand-bbs-go/internal/service/user_service"
+	"second-hand-bbs-go/utils"
+	"second-hand-bbs-go/utils/app"
+	"second-hand-bbs-go/utils/e"
 )
 
-type User struct {
-	Username string `validate:"min=6,max=10"`
-	Age      uint8  `validate:"gte=1,lte=10"`
-	Sex      string `validate:"oneof=female male"`
-}
+func Register(c *gin.Context) {
+	appG := app.Gin{c}
 
-func register(c *gin.Context) {
-	validate := validator.New()
+	var user models.User
+	_ = c.ShouldBindJSON(&user)
+	if err := utils.Verify(user, utils.LoginVerify); err != nil {
+		appG.Response(http.StatusOK, e.INVALID_PARAMS, err.Error())
+		return
+	}
 
+	isExist, err := user_service.IsUserExistByName(user.Username)
+	if err != nil {
+		appG.Response(http.StatusOK, e.INVALID_PARAMS, err.Error())
+		return
+	}
+	if isExist {
+		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+		return
+	}
+
+	appG.Response(http.StatusOK, e.SUCCESS, nil)
 }

@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
-	_ "second-hand-bbs-go/docs"
 	"second-hand-bbs-go/internal/routers/api/v1"
 	"second-hand-bbs-go/utils"
 )
@@ -39,7 +38,7 @@ func InitRouter() *gin.Engine {
 	auth := r.Group("/api/v1")
 	{
 		// 注册
-		auth.POST("/register")
+		auth.POST("/register", v1.Register)
 		// 登录
 		auth.POST("/login")
 	}
