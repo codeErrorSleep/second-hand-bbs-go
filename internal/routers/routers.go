@@ -35,7 +35,7 @@ func InitRouter() *gin.Engine {
 	}
 
 	// 用户管理
-	auth := r.Group("/api/v1")
+	auth := r.Group("/api/v1/user")
 	{
 		// 注册
 		auth.POST("/register", v1.Register)

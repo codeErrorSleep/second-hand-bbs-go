@@ -9,6 +9,7 @@ require (
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/jinzhu/gorm v1.9.16
+	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
 	github.com/swaggo/gin-swagger v1.3.0
 	github.com/unknwon/com v1.0.1

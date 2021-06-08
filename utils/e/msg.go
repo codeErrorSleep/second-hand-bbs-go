@@ -10,6 +10,9 @@ var MsgFlags = map[int]string{
 	ERROR_GET_PRODUCTS_FAIL: "获取商品列表失败",
 	ERROR_ADD_PRODUCT_FAIL:  "添加商品失败",
 
+	USER_NAME_EXIST:   "用户名已经存在",
+	USER_CREATE_FALSE: "用户注册失败",
+
 	ERROR_AUTH_CHECK_TOKEN_FAIL:    "Token鉴权失败",
 	ERROR_AUTH_CHECK_TOKEN_TIMEOUT: "Token已超时",
 	ERROR_AUTH_TOKEN:               "Token生成失败",

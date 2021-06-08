@@ -1,25 +1,32 @@
 package models
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+	"time"
+)
 
 type User struct {
-	Model
-
-	Username string `json:"user_name" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	gorm.Model
+	Username string `json:"username" gorm:"column:user_name"`
+	Password string `json:"password" `
 }
 
 // 获取名字是否存在
-func IsUserExist(name string) (bool, error) {
+func IsUserExist(name string) (int, error) {
 	var count int
-	err := db.Where("user_name=?", name).Count(&count).Error
+	err := db.Table("user").Where("user_name=?", name).Count(&count).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
-		return false, err
+		return 0, err
 	}
-	if count > 0 {
-		return false, nil
-	} else {
-		return true, nil
-	}
+	return count, nil
+}
 
+// 插入新用户
+func InsetUser(user User) error {
+	user.CreatedAt = time.Now()
+	err := db.Table("user").Create(user).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

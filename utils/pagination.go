@@ -3,6 +3,8 @@ package utils
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
+	"math/rand"
+	"time"
 )
 
 func GetPage(c *gin.Context) int {
@@ -13,4 +15,11 @@ func GetPage(c *gin.Context) int {
 	}
 
 	return result
+}
+
+func GetOnlyId() uint {
+	rand.Seed(time.Now().Unix())
+	result := rand.Intn(999999)
+
+	return uint(result)
 }

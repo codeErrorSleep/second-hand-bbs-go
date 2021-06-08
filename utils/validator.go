@@ -114,7 +114,7 @@ func Verify(st interface{}, roleMap Rules) (err error) {
 		"ge": true,
 		"gt": true,
 	}
-
+	// 通过反射获取类型
 	typ := reflect.TypeOf(st)
 	val := reflect.ValueOf(st) // 获取reflect.Type类型
 

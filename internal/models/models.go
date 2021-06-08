@@ -10,6 +10,7 @@ import (
 
 var db *gorm.DB
 
+// todo 改用gorm自带的
 type Model struct {
 	ID         int    `gorm:"primary_key" json:"id"`
 	CreatedOn  string `json:"created_on"`
