@@ -5,7 +5,6 @@ import (
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
-	"net/http"
 	"second-hand-bbs-go/internal/service/product_service"
 	"second-hand-bbs-go/utils"
 	"second-hand-bbs-go/utils/app"
@@ -18,7 +17,7 @@ func GetProducts(c *gin.Context) {
 	valid := validation.Validation{}
 	if valid.HasErrors() {
 		app.MarkErrors(valid.Errors)
-		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+		appG.Response(e.INVALID_PARAMS, nil)
 		return
 	}
 
@@ -30,10 +29,10 @@ func GetProducts(c *gin.Context) {
 	// 获取商品列表
 	products, err := productService.GetAll()
 	if err != nil {
-		appG.Response(http.StatusOK, e.ERROR_GET_PRODUCTS_FAIL, nil)
+		appG.Response(e.ERROR_GET_PRODUCTS_FAIL, nil)
 		return
 	}
-	appG.Response(http.StatusOK, e.SUCCESS, products)
+	appG.Response(e.SUCCESS, products)
 
 }
 
@@ -42,7 +41,7 @@ func GetProductTotal(c *gin.Context) {
 	valid := validation.Validation{}
 	if valid.HasErrors() {
 		app.MarkErrors(valid.Errors)
-		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+		appG.Response(e.INVALID_PARAMS, nil)
 		return
 	}
 
@@ -50,10 +49,10 @@ func GetProductTotal(c *gin.Context) {
 	// 获取商品总数
 	total, err := productService.Count()
 	if err != nil {
-		appG.Response(http.StatusInternalServerError, e.INVALID_PARAMS, nil)
+		appG.Response(e.INVALID_PARAMS, nil)
 		return
 	}
-	appG.Response(http.StatusOK, e.SUCCESS, total)
+	appG.Response(e.SUCCESS, total)
 }
 
 // @Summary 获取单个商品
@@ -70,7 +69,7 @@ func GetProduct(c *gin.Context) {
 
 	if valid.HasErrors() {
 		app.MarkErrors(valid.Errors)
-		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+		appG.Response(e.INVALID_PARAMS, nil)
 		return
 	}
 
@@ -78,20 +77,20 @@ func GetProduct(c *gin.Context) {
 	exists, err := productService.ExistById()
 
 	if err != nil {
-		appG.Response(http.StatusInternalServerError, e.INVALID_PARAMS, nil)
+		appG.Response(e.INVALID_PARAMS, nil)
 		return
 	}
 	if !exists {
-		appG.Response(http.StatusOK, e.ERROR_NOT_EXIST_PRODUCT, nil)
+		appG.Response(e.ERROR_NOT_EXIST_PRODUCT, nil)
 		return
 	}
 
 	product, err := productService.Get()
 	if err != nil {
-		appG.Response(http.StatusInternalServerError, e.ERROR_GET_PRODUCT_FAIL, nil)
+		appG.Response(e.ERROR_GET_PRODUCT_FAIL, nil)
 		return
 	}
-	appG.Response(http.StatusOK, e.SUCCESS, product)
+	appG.Response(e.SUCCESS, product)
 }
 
 type AddProductForm struct {
@@ -116,9 +115,9 @@ func AddProduct(c *gin.Context) {
 		form AddProductForm
 	)
 
-	httpCode, errCode := app.BindAndValid(c, &form)
+	_, errCode := app.BindAndValid(c, &form)
 	if errCode != e.SUCCESS {
-		appG.Response(httpCode, errCode, nil)
+		appG.Response(errCode, nil)
 		return
 	}
 
@@ -132,10 +131,10 @@ func AddProduct(c *gin.Context) {
 	}
 
 	if err := productService.Add(); err != nil {
-		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_PRODUCT_FAIL, nil)
+		appG.Response(e.ERROR_ADD_PRODUCT_FAIL, nil)
 		return
 	}
-	appG.Response(http.StatusOK, e.SUCCESS, nil)
+	appG.Response(e.SUCCESS, nil)
 }
 
 //修改商品信息

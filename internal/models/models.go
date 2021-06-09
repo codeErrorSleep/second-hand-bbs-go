@@ -6,15 +6,16 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"log"
 	"second-hand-bbs-go/utils"
+	"time"
 )
 
 var db *gorm.DB
 
-// todo 改用gorm自带的
+// todo 与验证部分有冲突,后续修改
 type Model struct {
-	ID         int    `gorm:"primary_key" json:"id"`
-	CreatedOn  string `json:"created_on"`
-	ModifiedOn string `json:"modified_on"`
+	ID        uint      `json:"id" gorm:"primarykey"` // 主键ID
+	CreatedAt time.Time // 创建时间
+	UpdatedAt time.Time // 更新时间
 }
 
 func init() {
