@@ -20,6 +20,8 @@ func InitRouter() *gin.Engine {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	apiv1 := r.Group("/api/v1")
 	{
+		//登录验证权限绑定
+		//apiv1.Use(middleware.AuthMiddleware())
 		//获取多个商品列表
 		apiv1.POST("/products", v1.GetProducts)
 		//获取商品列表总数

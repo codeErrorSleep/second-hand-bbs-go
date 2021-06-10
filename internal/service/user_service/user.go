@@ -64,7 +64,8 @@ func Login(user *request.UserLoginStruct) (string, error) {
 
 	// 生成token
 	tokenContext := token.Context{
-		Username: user.Username,
+		Username:       user.Username,
+		ExpirationTime: int64(utils.AppSetting.JwtExpirationTime),
 	}
 	tokenString, err := token.Sign(context.Background(), tokenContext, utils.AppSetting.JwtSecret)
 	if err != nil {

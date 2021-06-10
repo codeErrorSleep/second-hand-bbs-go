@@ -17,8 +17,9 @@ var (
 )
 
 type App struct {
-	PageSize  int
-	JwtSecret string
+	PageSize          int
+	JwtSecret         string
+	JwtExpirationTime int
 }
 
 var AppSetting = &App{}
@@ -57,5 +58,6 @@ func LoadApp() {
 	}
 
 	AppSetting.PageSize = sec.Key("PAGE_SIZE").MustInt(10)
-	AppSetting.JwtSecret = sec.Key("23347$040412").MustString("23347$040412")
+	AppSetting.JwtSecret = sec.Key("JWT_SECRET").MustString("23347$040412")
+	AppSetting.JwtExpirationTime = sec.Key("JWT_EXPIRATION_TIME").MustInt(7)
 }

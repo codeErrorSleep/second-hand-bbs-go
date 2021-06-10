@@ -11,7 +11,7 @@ import (
 	"second-hand-bbs-go/utils/e"
 )
 
-// 用户注册
+// Register 用户注册
 func Register(c *gin.Context) {
 	appG := app.Gin{c}
 	// 绑定对应的参数
@@ -40,7 +40,7 @@ func Register(c *gin.Context) {
 	appG.Response(e.SUCCESS, nil)
 }
 
-// 更新用户密码
+// ChangeUserPassword 更新用户密码
 func ChangeUserPassword(c *gin.Context) {
 	appG := app.Gin{c}
 	// 绑定对应的参数
@@ -70,7 +70,7 @@ func ChangeUserPassword(c *gin.Context) {
 	appG.Response(e.SUCCESS, nil)
 }
 
-// 登录方法
+// Login 登录方法
 func Login(c *gin.Context) {
 	appG := app.Gin{c}
 	// 绑定对应的参数

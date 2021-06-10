@@ -6,6 +6,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
+	"second-hand-bbs-go/utils"
 	"time"
 )
 
@@ -47,7 +48,6 @@ func Parse(tokenString string, secret string) (*Context, error) {
 
 		// Read the token if it's valid.
 	} else if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		ctx.UserID = uint64(claims["user_id"].(float64))
 		ctx.Username = claims["username"].(string)
 		ctx.ExpirationTime = int64(claims["expiration_time"].(float64))
 		return ctx, nil
@@ -64,10 +64,10 @@ func ParseRequest(c *gin.Context) (*Context, error) {
 	token := c.Request.Header.Get("token")
 
 	// Load the jwt secret from config
-	secret := viper.GetString("jwt_secret")
-
+	//secret := viper.GetString("jwt_secret")
+	secret := utils.AppSetting.JwtSecret
 	if len(token) == 0 {
-		return &Context{}, ErrMissingHeader
+		return nil, ErrMissingHeader
 	}
 
 	return Parse(token, secret)
@@ -84,7 +84,7 @@ func Sign(ctx context.Context, c Context, secret string) (tokenString string, er
 	// jti: （JWT ID）用于标识JWT的唯一ID
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username":        c.Username,
-		"expiration_time": time.Now().Unix(),
+		"expiration_time": time.Now().Unix() + 24*3600*c.ExpirationTime,
 	})
 	// Sign the token with the specified secret.
 	tokenString, err = token.SignedString([]byte(secret))
