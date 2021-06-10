@@ -14,12 +14,11 @@ var (
 	HTTPPort     int
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
-
-	JwtSecret string
 )
 
 type App struct {
-	PageSize int
+	PageSize  int
+	JwtSecret string
 }
 
 var AppSetting = &App{}
@@ -58,4 +57,5 @@ func LoadApp() {
 	}
 
 	AppSetting.PageSize = sec.Key("PAGE_SIZE").MustInt(10)
+	AppSetting.JwtSecret = sec.Key("23347$040412").MustString("23347$040412")
 }

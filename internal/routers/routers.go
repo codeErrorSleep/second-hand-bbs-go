@@ -40,10 +40,9 @@ func InitRouter() *gin.Engine {
 		// 注册
 		auth.POST("/register", v1.Register)
 		// 登录
-		auth.POST("/login")
+		auth.POST("/login", v1.Login)
 		// 修改密码
 		auth.POST("/change_password", v1.ChangeUserPassword)
-
 	}
 
 	return r

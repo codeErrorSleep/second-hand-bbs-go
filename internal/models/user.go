@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
 	"time"
 )
 
@@ -11,6 +12,28 @@ type User struct {
 	Password  string    `json:"password" `
 	CreatedAt time.Time // 创建时间
 	UpdatedAt time.Time // 更新时间
+}
+
+const (
+	// PassWordCost 密码加密难度
+	PassWordCost = 12
+	// UserTable ...
+	UserTable string = "user"
+)
+
+// 注册是密码加密
+func (user *User) EncryptionPassword() error {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(user.Password), PassWordCost)
+	if err != nil {
+		return err
+	}
+	user.Password = string(bytes)
+	return nil
+}
+
+func (user *User) CheckPassword(password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	return err == nil
 }
 
 // 获取名字是否存在

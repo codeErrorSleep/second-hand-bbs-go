@@ -5,6 +5,7 @@ import (
 	"second-hand-bbs-go/internal/models"
 	"second-hand-bbs-go/internal/models/request"
 	"second-hand-bbs-go/internal/service/user_service"
+	"second-hand-bbs-go/logging"
 	"second-hand-bbs-go/utils"
 	"second-hand-bbs-go/utils/app"
 	"second-hand-bbs-go/utils/e"
@@ -50,7 +51,7 @@ func ChangeUserPassword(c *gin.Context) {
 		return
 	}
 	// 判断原密码是否正确
-	modelUser, err := user_service.GetUserByName(&user)
+	modelUser, err := user_service.GetUserByName(user.Username)
 	if err != nil {
 		appG.Response(e.INVALID_PARAMS, err.Error())
 		return
@@ -67,4 +68,23 @@ func ChangeUserPassword(c *gin.Context) {
 		return
 	}
 	appG.Response(e.SUCCESS, nil)
+}
+
+// 登录方法
+func Login(c *gin.Context) {
+	appG := app.Gin{c}
+	// 绑定对应的参数
+	var user request.UserLoginStruct
+	_ = c.ShouldBindJSON(&user)
+	if err := utils.Verify(user, utils.LoginVerify); err != nil {
+		appG.Response(e.INVALID_PARAMS, err.Error())
+		return
+	}
+	logging.Info("登录用户username:", user.Username)
+	token, err := user_service.Login(&user)
+	if err != nil || token == "" {
+		appG.Response(e.USER_LOGIN_FAIL, err.Error())
+		return
+	}
+	appG.Response(e.SUCCESS, token)
 }

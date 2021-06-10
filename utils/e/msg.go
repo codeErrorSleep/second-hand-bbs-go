@@ -14,6 +14,7 @@ var MsgFlags = map[int]string{
 	USER_CREATE_FALSE:   "用户注册失败",
 	USER_PASSWORD_WRONG: "密码错误",
 	USER_UPDATE_FAIL:    "用户信息更新错误",
+	USER_LOGIN_FAIL:     "登录失败",
 
 	ERROR_AUTH_CHECK_TOKEN_FAIL:    "Token鉴权失败",
 	ERROR_AUTH_CHECK_TOKEN_TIMEOUT: "Token已超时",
