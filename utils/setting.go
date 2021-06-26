@@ -14,12 +14,18 @@ var (
 	HTTPPort     int
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
+
+	JwtSecret string
 )
 
 type App struct {
+<<<<<<< HEAD
 	PageSize          int
 	JwtSecret         string
 	JwtExpirationTime int
+=======
+	PageSize int
+>>>>>>> parent of fee293e (登录生成token,后续添加验证)
 }
 
 var AppSetting = &App{}
@@ -58,6 +64,9 @@ func LoadApp() {
 	}
 
 	AppSetting.PageSize = sec.Key("PAGE_SIZE").MustInt(10)
+<<<<<<< HEAD
 	AppSetting.JwtSecret = sec.Key("JWT_SECRET").MustString("23347$040412")
 	AppSetting.JwtExpirationTime = sec.Key("JWT_EXPIRATION_TIME").MustInt(7)
+=======
+>>>>>>> parent of fee293e (登录生成token,后续添加验证)
 }

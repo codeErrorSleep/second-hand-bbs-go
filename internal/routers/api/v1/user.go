@@ -5,7 +5,6 @@ import (
 	"second-hand-bbs-go/internal/models"
 	"second-hand-bbs-go/internal/models/request"
 	"second-hand-bbs-go/internal/service/user_service"
-	"second-hand-bbs-go/logging"
 	"second-hand-bbs-go/utils"
 	"second-hand-bbs-go/utils/app"
 	"second-hand-bbs-go/utils/e"
@@ -51,7 +50,7 @@ func ChangeUserPassword(c *gin.Context) {
 		return
 	}
 	// 判断原密码是否正确
-	modelUser, err := user_service.GetUserByName(user.Username)
+	modelUser, err := user_service.GetUserByName(&user)
 	if err != nil {
 		appG.Response(e.INVALID_PARAMS, err.Error())
 		return
@@ -69,6 +68,7 @@ func ChangeUserPassword(c *gin.Context) {
 	}
 	appG.Response(e.SUCCESS, nil)
 }
+<<<<<<< HEAD
 
 // Login 登录方法
 func Login(c *gin.Context) {
@@ -88,3 +88,5 @@ func Login(c *gin.Context) {
 	}
 	appG.Response(e.SUCCESS, token)
 }
+=======
+>>>>>>> parent of fee293e (登录生成token,后续添加验证)

@@ -17,7 +17,6 @@ func GetPage(c *gin.Context) int {
 	return result
 }
 
-// 获取唯一id
 func GetOnlyId() uint {
 	rand.Seed(time.Now().Unix())
 	result := rand.Intn(999999)

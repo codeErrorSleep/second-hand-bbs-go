@@ -1,10 +1,8 @@
 package user_service
 
 import (
-	"golang.org/x/net/context"
 	"second-hand-bbs-go/internal/models"
 	"second-hand-bbs-go/internal/models/request"
-	"second-hand-bbs-go/pkg/token"
 	"second-hand-bbs-go/utils"
 	"time"
 )
@@ -25,17 +23,16 @@ func IsUserExistByName(name string) (bool, error) {
 // 注册用户
 func Register(user *models.User) error {
 	user.ID = utils.GetOnlyId()
-	if err := user.EncryptionPassword(); err != nil {
-		return err
-	}
-	if err := models.InsetUser(user); err != nil {
+	err := models.InsetUser(user)
+	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func GetUserByName(username string) (models.User, error) {
-	u, err := models.GetUserByName(username)
+// 验证密码是否正确
+func GetUserByName(user *request.ChangePasswordStruct) (models.User, error) {
+	u, err := models.GetUserByName(user.Username)
 	if err != nil {
 		return u, err
 	}
@@ -44,14 +41,13 @@ func GetUserByName(username string) (models.User, error) {
 
 func ChangePassword(user *models.User) error {
 	user.UpdatedAt = time.Now()
-	if err := user.EncryptionPassword(); err != nil {
-		return err
-	}
-	if err := models.SaveUser(user); err != nil {
+	err := models.SaveUser(user)
+	if err != nil {
 		return err
 	}
 	return nil
 }
+<<<<<<< HEAD
 
 func Login(user *request.UserLoginStruct) (string, error) {
 	isRight, err := isUserPasswordRight(user)
@@ -84,3 +80,5 @@ func isUserPasswordRight(user *request.UserLoginStruct) (bool, error) {
 	}
 	return true, nil
 }
+=======
+>>>>>>> parent of fee293e (登录生成token,后续添加验证)
